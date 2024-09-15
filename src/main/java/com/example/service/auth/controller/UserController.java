@@ -12,12 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/api/auth")
 @SecurityRequirement(name = "bearer-key")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://172.27.64.1:8082")
 public class UserController {
     @Autowired
     private UserService service;
