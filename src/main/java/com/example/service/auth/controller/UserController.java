@@ -5,18 +5,19 @@ import com.example.service.auth.model.DataToken;
 import com.example.service.auth.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/auth")
 @SecurityRequirement(name = "bearer-key")
+@CrossOrigin("*")
 public class UserController {
     @Autowired
     private UserService service;
@@ -32,5 +33,9 @@ public class UserController {
     @Operation(summary ="Registers new users", description = "Register a user with the necessary information and send it for validation")
     public ResponseEntity<DataLoginDTO> register(@RequestBody @Valid DataLoginDTO dto){
         return ResponseEntity.ok(service.register(dto));
+    }
+    @GetMapping("/valid/{token}")
+    public void validation(@PathVariable String token, HttpServletResponse response){
+        this.service.valid(token,response);
     }
 }

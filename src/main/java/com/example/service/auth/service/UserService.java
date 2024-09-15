@@ -6,11 +6,15 @@ import com.example.service.auth.domain.User;
 import com.example.service.auth.model.DataLoginDTO;
 import com.example.service.auth.model.DataToken;
 import com.example.service.auth.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class UserService {
@@ -39,5 +43,9 @@ public class UserService {
 
     private String encoder(String password) {
         return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public void valid(String token, HttpServletResponse response) {
+           this.service.getToken(token);
     }
 }
