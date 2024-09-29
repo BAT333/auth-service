@@ -7,16 +7,15 @@ import com.example.service.auth.model.DataLoginDTO;
 import com.example.service.auth.model.DataToken;
 import com.example.service.auth.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
+@Slf4j
 public class UserService {
     @Autowired
     private AuthenticationManager manager;
@@ -26,13 +25,16 @@ public class UserService {
     @Autowired
     private TokenService service;
     public DataToken login(DataLoginDTO dto) {
+        log.info("Performing a login");
         var user = new UsernamePasswordAuthenticationToken(dto.login(),dto.password());
         var userAuth = manager.authenticate(user);
         return new DataToken(service.generatesToken((User)userAuth.getPrincipal()));
     }
 
     public DataLoginDTO register(DataLoginDTO dto) {
+        log.info("registering a new login");
         if(repository.existsByLogin(dto.login())){
+            log.error("error registering a new login");
             throw new AuthExceptions();
         }
         var user = repository.save(new User(dto.login(),this.encoder(dto.password())));
@@ -46,6 +48,7 @@ public class UserService {
     }
 
     public void valid(String token, HttpServletResponse response) {
-           this.service.getToken(token);
+        log.info("validating login");
+        this.service.getToken(token);
     }
 }
